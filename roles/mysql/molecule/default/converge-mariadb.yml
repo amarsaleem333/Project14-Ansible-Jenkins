@@ -1,0 +1,24 @@
+---
+- name: Converge (MariaDB)
+  hosts: all
+  pre_tasks:
+    # On Debian/Ubuntu the role defaults to Oracle MySQL (vars/Debian.yml).
+    # Override here to install MariaDB instead. RedHat-based distros and newer
+    # Debian versions already default to MariaDB in their OS-specific vars files
+    # and are excluded from the CI matrix for this playbook.
+    - name: Set MariaDB packages for Debian/Ubuntu.
+      ansible.builtin.set_fact:
+        mysql_daemon: mariadb
+        mysql_packages:
+          - mariadb-server
+          - mariadb-client
+          - python3-pymysql
+      when: ansible_facts.os_family == 'Debian'
+
+  roles:
+    - role: geerlingguy.mysql
+
+  post_tasks:
+    - name: Make sure we can connect to MariaDB via Unix socket.
+      ansible.builtin.command: "mysql -u root -e 'show databases;'"
+      changed_when: false

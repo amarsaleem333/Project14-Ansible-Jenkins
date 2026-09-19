@@ -1,0 +1,6 @@
+---
+# Debian Testing moved the data directory from /var/lib/mysql to
+# /var/lib/mariadb for better co-installability with MySQL in version
+# 1:11.8.6-5 of the mariadb package.  Since Ubuntu 2026.04 is derived from
+# Debian Testing we need to adopt this new directory.
+mysql_datadir: /var/lib/mariadb

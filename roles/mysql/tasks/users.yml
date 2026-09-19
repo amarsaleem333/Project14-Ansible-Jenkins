@@ -1,0 +1,18 @@
+---
+- name: Ensure MySQL users are present.
+  mysql_user:
+    name: "{{ item.name }}"
+    host: "{{ item.host | default('localhost') }}"
+    password: "{{ item.password | default(omit) }}"
+    priv: "{{ item.priv | default('*.*:USAGE') }}"
+    state: "{{ item.state | default('present') }}"
+    append_privs: "{{ item.append_privs | default(false) }}"
+    encrypted: "{{ item.encrypted | default(false) }}"
+    column_case_sensitive: "{{ item.case_sensitive | default(false) }}"
+    update_password: "{{ item.update_password | default('always') }}"
+    plugin: "{{ item.plugin | default(omit) }}"
+    plugin_auth_string: "{{ item.plugin_auth_string | default(omit) }}"
+    plugin_hash_string: "{{ item.plugin_hash_string | default(omit) }}"
+    tls_requires: "{{ item.tls_requires | default({}) }}"
+  with_items: "{{ mysql_users }}"
+  no_log: "{{ mysql_hide_passwords }}"

@@ -1,0 +1,15 @@
+---
+- name: Collate variables from env specific file
+  hosts: all
+  tasks:
+    - name: Looping through list of available files
+      include_vars: "{{ item }}"
+      with_first_found:
+        - files:
+            - "{{ inventory_file | basename }}.yml"
+            - "{{ inventory_file | basename }}"
+            - "dev.yml"
+          paths:
+            - "{{ playbook_dir }}/../env-vars"
+      tags:
+        - always
