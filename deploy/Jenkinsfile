@@ -1,12 +1,24 @@
 pipeline {
     agent any
 
+    parameters {
+        string(
+            name: 'inventory', 
+            defaultValue: 'dev',  
+            description: 'This is the inventory file for the environment to deploy configuration (e.g., dev, sit)'
+        )
+        string(
+            name: 'ansible_tag', 
+            defaultValue: 'webserver', 
+            description: 'Ansible tag to limit execution to a specific role or playbook section (e.g., webserver, db)'
+        )
+    }
+
     stages {
-        stage('Build') {
+        stage('Execute Ansible Playbook') {
             steps {
-                script {
-                    sh 'echo "Building Stage"'
-                }
+                // Runs ansible-playbook dynamically using the selected inventory and tags
+                sh "ansible-playbook -i inventory/${params.inventory} playbook.yml --tags ${params.ansible_tag}"
             }
         }
     }
