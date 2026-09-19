@@ -18,7 +18,7 @@ pipeline {
         stage('Execute Ansible Playbook') {
             steps {
                 // Runs ansible-playbook dynamically using the selected inventory and tags
-                sh "ansible-playbook -i inventory/${inventory} playbook.yml --tags ${ansible_tag}"
+                sh "ansible-playbook -i inventory/${inventory} site.yml --tags ${ansible_tag}"
             }
         }
     }
