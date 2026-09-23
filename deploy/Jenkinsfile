@@ -30,6 +30,8 @@ pipeline {
             mkdir -p storage/framework/cache
         '''
         sh '/usr/local/bin/composer config policy.advisories.block false'
+        // Require a stable older version compatible with PHP 7.2 for reflection-docblock
+        sh '/usr/bin/php7.2 /usr/local/bin/composer require phpdocumentor/reflection-docblock:"^2.0 || ^3.0" --ignore-platform-reqs --no-update'
         sh '/usr/bin/php7.2 /usr/local/bin/composer update --ignore-platform-reqs --no-scripts --no-plugins --no-audit'
         sh 'DB_USERNAME=homestead DB_PASSWORD=sePret^i /usr/bin/php7.2 artisan migrate'
         sh 'DB_USERNAME=homestead DB_PASSWORD=sePret^i /usr/bin/php7.2 artisan db:seed'
