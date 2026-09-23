@@ -2,23 +2,16 @@ pipeline {
     agent any
 
     stages {
-        stage("Initial cleanup") {
+        stage('Checkout Repository') {
             steps {
-                dir("${WORKSPACE}") {
-                    deleteDir()
-                }
-            }
-        }
-  
-        stage('Checkout SCM') {
-            steps {
-                git branch: 'main', url: 'https://github.com/StegTechHub/php-todo.git'
+                // This checks out your main project repository containing .env.sample
+                checkout scm
             }
         }
 
         stage('Prepare Dependencies') {
             steps {
-                sh 'mv .env.sample .env'
+                sh 'cp .env.sample .env'
                 sh 'composer install'
                 sh 'php artisan migrate'
                 sh 'php artisan db:seed'
