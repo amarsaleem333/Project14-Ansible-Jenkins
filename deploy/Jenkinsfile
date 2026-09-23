@@ -30,8 +30,8 @@ pipeline {
             mkdir -p storage/framework/cache
         '''
         sh '/usr/local/bin/composer config policy.advisories.block false'
-        // Allow plugins globally for Composer execution in this workspace
-        sh '/usr/bin/php7.2 /usr/local/bin/composer config --json extra.allow-plugins \'{"*": true}\''
+        // Update lock file format to satisfy Composer 2.x plugin checks
+        sh '/usr/bin/php7.2 /usr/local/bin/composer update --lock --ignore-platform-reqs --no-scripts'
         sh '/usr/bin/php7.2 /usr/local/bin/composer require phpdocumentor/reflection-docblock:"^2.0 || ^3.0" --ignore-platform-reqs --no-update'
         sh '/usr/bin/php7.2 /usr/local/bin/composer update --ignore-platform-reqs --no-scripts --no-plugins --no-audit'
         sh 'DB_USERNAME=homestead DB_PASSWORD=sePret^i /usr/bin/php7.2 artisan migrate'
