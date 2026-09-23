@@ -31,7 +31,7 @@ pipeline {
                     rm -f composer.lock
                 '''
                 sh '/usr/local/bin/composer config policy.advisories.block false'
-                sh 'COMPOSER_ALLOW_SUPERUSER=1 /usr/bin/php7.2 /usr/local/bin/composer install --ignore-platform-reqs --no-scripts --no-plugins --no-audit'
+                sh 'COMPOSER_ALLOW_SUPERUSER=1 /usr/bin/php7.2 /usr/local/bin/composer install --ignore-platform-reqs --no-scripts --no-plugins'
                 sh 'DB_USERNAME=homestead DB_PASSWORD=sePret^i /usr/bin/php7.2 artisan migrate --force'
                 sh 'DB_USERNAME=homestead DB_PASSWORD=sePret^i /usr/bin/php7.2 artisan db:seed --force'
                 sh 'DB_USERNAME=homestead DB_PASSWORD=sePret^i /usr/bin/php7.2 artisan key:generate'
