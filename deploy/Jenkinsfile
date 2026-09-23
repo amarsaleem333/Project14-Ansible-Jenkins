@@ -9,7 +9,7 @@ pipeline {
             }
         }
 
-   stage('Prepare Dependencies') {
+  stage('Prepare Dependencies') {
     steps {
         sh '''
             echo "APP_NAME=Laravel" > .env
@@ -22,7 +22,12 @@ pipeline {
             echo "DB_PORT=3306" >> .env
             echo "DB_DATABASE=homestead" >> .env
             echo "DB_USERNAME=homestead" >> .env
-            echo "DB_PASSWORD=sePret^i" >> .env
+            echo "DB_PASSWORD=sePret^i"
+            
+            mkdir -p bootstrap/cache
+            mkdir -p storage/framework/views
+            mkdir -p storage/framework/sessions
+            mkdir -p storage/framework/cache
         '''
         sh '/usr/local/bin/composer config policy.advisories.block false'
         sh '/usr/bin/php7.2 /usr/local/bin/composer update --ignore-platform-reqs --no-scripts --no-plugins --no-audit'
