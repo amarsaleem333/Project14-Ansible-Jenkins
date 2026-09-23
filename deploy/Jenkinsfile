@@ -22,7 +22,7 @@ pipeline {
             echo "DB_PORT=3306" >> .env
             echo "DB_DATABASE=homestead" >> .env
             echo "DB_USERNAME=homestead" >> .env
-            echo "DB_PASSWORD=sePret^i"
+            echo "DB_PASSWORD=sePret^i" >> .env
             
             mkdir -p bootstrap/cache
             mkdir -p storage/framework/views
@@ -31,9 +31,9 @@ pipeline {
         '''
         sh '/usr/local/bin/composer config policy.advisories.block false'
         sh '/usr/bin/php7.2 /usr/local/bin/composer update --ignore-platform-reqs --no-scripts --no-plugins --no-audit'
-        sh '/usr/bin/php7.2 artisan migrate'
-        sh '/usr/bin/php7.2 artisan db:seed'
-        sh '/usr/bin/php7.2 artisan key:generate'
+        sh 'DB_USERNAME=homestead DB_PASSWORD=sePret^i /usr/bin/php7.2 artisan migrate'
+        sh 'DB_USERNAME=homestead DB_PASSWORD=sePret^i /usr/bin/php7.2 artisan db:seed'
+        sh 'DB_USERNAME=homestead DB_PASSWORD=sePret^i /usr/bin/php7.2 artisan key:generate'
     }
 }
         stage('Execute Unit Tests') {
