@@ -9,7 +9,7 @@ pipeline {
             }
         }
 
-     stage('Prepare Dependencies') {
+    stage('Prepare Dependencies') {
     steps {
         sh '''
             echo "APP_NAME=Laravel" > .env
@@ -24,8 +24,7 @@ pipeline {
             echo "DB_USERNAME=homestead" >> .env
             echo "DB_PASSWORD=sePret^i" >> .env
         '''
-        // Update dependencies to match PHP 8.3
-        sh '/usr/local/bin/composer update --ignore-platform-reqs'
+        sh '/usr/local/bin/composer update --ignore-platform-reqs --no-scripts'
         sh 'php artisan migrate'
         sh 'php artisan db:seed'
         sh 'php artisan key:generate'
