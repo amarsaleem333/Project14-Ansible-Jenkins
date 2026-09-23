@@ -4,45 +4,44 @@ pipeline {
     stages {
         stage('Checkout SCM') {
             steps {
-                // Check out the php-todo repository which contains .env.sample and composer.json
                 git branch: 'main', url: 'https://github.com/StegTechHub/php-todo.git'
             }
         }
 
-  stage('Prepare Dependencies') {
-    steps {
-        sh '''
-            echo "APP_NAME=Laravel" > .env
-            echo "APP_ENV=local" >> .env
-            echo "APP_KEY=base64:randomstring1234567890=" >> .env
-            echo "APP_DEBUG=true" >> .env
-            echo "APP_URL=http://localhost" >> .env
-            echo "DB_CONNECTION=mysql" >> .env
-            echo "DB_HOST=127.0.0.1" >> .env
-            echo "DB_PORT=3306" >> .env
-            echo "DB_DATABASE=homestead" >> .env
-            echo "DB_USERNAME=homestead" >> .env
-            echo "DB_PASSWORD=sePret^i" >> .env
-            
-            mkdir -p bootstrap/cache
-            mkdir -p storage/framework/views
-            mkdir -p storage/framework/sessions
-            mkdir -p storage/framework/cache
-        '''
-        sh '/usr/local/bin/composer config policy.advisories.block false'
-        // Update lock file format to satisfy Composer 2.x plugin checks
-        sh '/usr/bin/php7.2 /usr/local/bin/composer update --lock --ignore-platform-reqs --no-scripts'
-        sh '/usr/bin/php7.2 /usr/local/bin/composer require phpdocumentor/reflection-docblock:"^2.0 || ^3.0" --ignore-platform-reqs --no-update'
-        sh '/usr/bin/php7.2 /usr/local/bin/composer update --ignore-platform-reqs --no-scripts --no-plugins --no-audit'
-        sh 'DB_USERNAME=homestead DB_PASSWORD=sePret^i /usr/bin/php7.2 artisan migrate'
-        sh 'DB_USERNAME=homestead DB_PASSWORD=sePret^i /usr/bin/php7.2 artisan db:seed'
-        sh 'DB_USERNAME=homestead DB_PASSWORD=sePret^i /usr/bin/php7.2 artisan key:generate'
-    }
-}
+        stage('Prepare Dependencies') {
+            steps {
+                sh '''
+                    echo "APP_NAME=Laravel" > .env
+                    echo "APP_ENV=local" >> .env
+                    echo "APP_KEY=base64:randomstring1234567890=" >> .env
+                    echo "APP_DEBUG=true" >> .env
+                    echo "APP_URL=http://localhost" >> .env
+                    echo "DB_CONNECTION=mysql" >> .env
+                    echo "DB_HOST=127.0.0.1" >> .env
+                    echo "DB_PORT=3306" >> .env
+                    echo "DB_DATABASE=homestead" >> .env
+                    echo "DB_USERNAME=homestead" >> .env
+                    echo "DB_PASSWORD=sePret^i" >> .env
+                    
+                    mkdir -p bootstrap/cache
+                    mkdir -p storage/framework/views
+                    mkdir -p storage/framework/sessions
+                    mkdir -p storage/framework/cache
+                    
+                    rm -f composer.lock
+                '''
+                sh '/usr/local/bin/composer config policy.advisories.block false'
+                sh 'COMPOSER_ALLOW_SUPERUSER=1 /usr/bin/php7.2 /usr/local/bin/composer install --ignore-platform-reqs --no-scripts --no-plugins --no-audit'
+                sh 'DB_USERNAME=homestead DB_PASSWORD=sePret^i /usr/bin/php7.2 artisan migrate --force'
+                sh 'DB_USERNAME=homestead DB_PASSWORD=sePret^i /usr/bin/php7.2 artisan db:seed --force'
+                sh 'DB_USERNAME=homestead DB_PASSWORD=sePret^i /usr/bin/php7.2 artisan key:generate'
+            }
+        }
+
         stage('Execute Unit Tests') {
             steps {
-        sh '/usr/bin/php7.2 ./vendor/bin/phpunit'
-    }
-}
+                sh '/usr/bin/php7.2 ./vendor/bin/phpunit'
+            }
+        }
     }
 }
