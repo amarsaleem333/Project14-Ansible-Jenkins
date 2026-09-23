@@ -2,10 +2,10 @@ pipeline {
     agent any
 
     stages {
-        stage('Checkout Repository') {
+        stage('Checkout SCM') {
             steps {
-                // This checks out your main project repository containing .env.sample
-                checkout scm
+                // Check out the php-todo repository which contains .env.sample and composer.json
+                git branch: 'main', url: 'https://github.com/StegTechHub/php-todo.git'
             }
         }
 
