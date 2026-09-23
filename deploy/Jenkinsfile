@@ -9,15 +9,27 @@ pipeline {
             }
         }
 
-        stage('Prepare Dependencies') {
-            steps {
-                sh 'cp .env.example .env'
-                sh 'composer install'
-                sh 'php artisan migrate'
-                sh 'php artisan db:seed'
-                sh 'php artisan key:generate'
-            }
-        }
+       stage('Prepare Dependencies') {
+    steps {
+        sh '''
+            echo "APP_NAME=Laravel" > .env
+            echo "APP_ENV=local" >> .env
+            echo "APP_KEY=base64:randomstring1234567890=" >> .env
+            echo "APP_DEBUG=true" >> .env
+            echo "APP_URL=http://localhost" >> .env
+            echo "DB_CONNECTION=mysql" >> .env
+            echo "DB_HOST=127.0.0.1" >> .env
+            echo "DB_PORT=3306" >> .env
+            echo "DB_DATABASE=homestead" >> .env
+            echo "DB_USERNAME=homestead" >> .env
+            echo "DB_PASSWORD=sePret^i" >> .env
+        '''
+        sh 'composer install'
+        sh 'php artisan migrate'
+        sh 'php artisan db:seed'
+        sh 'php artisan key:generate'
+    }
+}
 
         stage('Execute Unit Tests') {
             steps {
