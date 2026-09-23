@@ -24,13 +24,13 @@ pipeline {
             echo "DB_USERNAME=homestead" >> .env
             echo "DB_PASSWORD=sePret^i" >> .env
         '''
+        sh '/usr/local/bin/composer config policy.advisories.block false'
         sh '/usr/local/bin/composer update --ignore-platform-reqs --no-scripts --no-plugins --no-audit'
         sh 'php artisan migrate'
         sh 'php artisan db:seed'
         sh 'php artisan key:generate'
     }
 }
-
         stage('Execute Unit Tests') {
             steps {
                 sh './vendor/bin/phpunit'
