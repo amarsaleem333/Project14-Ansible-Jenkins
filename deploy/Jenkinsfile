@@ -70,27 +70,27 @@ pipeline {
             }
         }
 
-        //stage('Upload Artifact to Artifactory') {
-        //    steps {
-        //        script { 
-        //            def server = Artifactory.server 'artifactory-server'                 
-        //           def uploadSpec = """{
-        //              "files": [
-        //                  {
-        //                  "pattern": "php-todo.zip",
-        //                 "target": "<name-of-artifact-repository>/php-todo",
-        //                 "props": "type=zip;status=ready"
-        //                   }
-        //              ]
-        //            }""" 
-        //          server.upload spec: uploadSpec
-        //        }
-        //  }
-        // }
+        stage('Upload Artifact to Artifactory') {
+           steps {
+               script { 
+                   def server = Artifactory.server 'artifactory-server'                 
+                   def uploadSpec = """{
+                     "files": [
+                         {
+                         "pattern": "php-todo.zip",
+                        "target": "<name-of-artifact-repository>/php-todo",
+                        "props": "type=zip;status=ready"
+                          }
+                      ]
+                    }""" 
+                  server.upload spec: uploadSpec
+                 }
+            }
+          }
 
-       // stage('Deploy to Dev Environment') {
-         //   steps {
-           //     build job: 'NewPipelineSept16', parameters: [[$class: 'StringParameterValue', name: 'env', value: 'dev']], propagate: false, wait: true
+            stage('Deploy to Dev Environment') {
+            steps {
+             build job: 'NewPipelineSept16', parameters: [[$class: 'StringParameterValue', name: 'env', value: 'dev']], propagate: false, wait: true
             }
         }
     }
