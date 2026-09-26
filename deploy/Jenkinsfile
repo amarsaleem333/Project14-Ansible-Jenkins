@@ -87,7 +87,7 @@ pipeline {
                     
                     for (String targetEnv : environments) {
                         echo "Triggering deployment for environment: ${targetEnv}"
-                        build job: 'NewPipelineSept16', 
+                        build job: 'Deploy-To-Server', 
                               parameters: [[$class: 'StringParameterValue', name: 'env', value: targetEnv]], 
                               propagate: false, 
                               wait: true
