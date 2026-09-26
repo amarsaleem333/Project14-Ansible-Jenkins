@@ -80,10 +80,18 @@ pipeline {
             }
         }
 
-        stage('Deploy to Dev Environment') {
+        stage('Deploy to Environments') {
             steps {
-                build job: 'NewPipelineSept16', parameters: [[$class: 'StringParameterValue', name: 'env', value: 'dev']], propagate: false, wait: true
+                script {
+                    def environments = ['dev', 'staging'] // Add more environments as needed
+                    
+                    for (String targetEnv : environments) {
+                        echo "Triggering deployment for environment: ${targetEnv}"
+                        build job: 'NewPipelineSept16', 
+                              parameters: [[$class: 'StringParameterValue', name: 'env', value: targetEnv]], 
+                              propagate: false, 
+                              wait: true
+                    }
+                }
             }
         }
-    }
-}
