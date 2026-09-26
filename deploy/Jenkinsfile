@@ -72,14 +72,13 @@ pipeline {
 
         stage('Upload Artifact to Artifactory') {
             steps {
-                withCredentials([usernamePassword(credentialsId: '035f2424-600f-444d-b972-7ddcbe7e7dd8', passwordVariable: '113355PASs$', usernameVariable: 'ARTIFACTORY_USER')]) {
-                    sh '''
-                        curl -u ${ARTIFACTORY_USER}:${ARTIFACTORY_PASSWORD} \
-                        -T php-todo.zip \
-                        "http://localhost:8081/artifactory/php-todo/php-todo.zip"
-                    '''
-                }
+                sh '''
+                    curl -u admin:113355PASs$ \
+                    -T php-todo.zip \
+                    "http://localhost:8081/artifactory/php-todo/php-todo.zip"
+                '''
             }
+        }
         }
 
         stage('Deploy to Dev Environment') {
