@@ -21,7 +21,7 @@ pipeline {
                     echo "DB_PORT=3306" >> .env
                     echo "DB_DATABASE=homestead" >> .env
                     echo "DB_USERNAME=homestead" >> .env
-                    echo "DB_PASSWORD=sePret^i"
+                    echo "DB_PASSWORD=sePret^i" >> .env
                     
                     mkdir -p bootstrap/cache
                     mkdir -p storage/framework/views
@@ -83,7 +83,7 @@ pipeline {
         stage('Deploy to Environments') {
             steps {
                 script {
-                    def environments = ['dev', 'staging'] // Add more environments as needed
+                    def environments = ['dev'] // Add more like 'staging', 'prod' as needed
                     
                     for (String targetEnv : environments) {
                         echo "Triggering deployment for environment: ${targetEnv}"
@@ -95,3 +95,5 @@ pipeline {
                 }
             }
         }
+    }
+}
