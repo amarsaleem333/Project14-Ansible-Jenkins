@@ -38,7 +38,7 @@ pipeline {
 
         stage('Execute Unit Tests') {
             steps {
-                sh 'DB_CONNECTION=mysql DB_HOST=127.0.0.1 DB_PORT=3306 DB_DATABASE=homestead DB_USERNAME=homestead DB_PASSWORD="sePret^i" /usr/bin/php7.2 ./vendor/bin/phpunit'
+                sh 'DB_CONNECTION=mysql DB_HOST=127.0.0.1 DB_PORT=3306 DB_DATABASE=homestead DB_USERNAME=homestead DB_PASSWORD=sePret^i /usr/bin/php7.2 ./vendor/bin/phpunit'
             }
         }
 
@@ -73,12 +73,11 @@ pipeline {
         stage('Upload Artifact to Artifactory') {
             steps {
                 sh '''
-                    curl -u admin:113355PASs$ \
+                    curl -u admin:password \
                     -T php-todo.zip \
                     "http://localhost:8081/artifactory/php-todo/php-todo.zip"
                 '''
             }
-        }
         }
 
         stage('Deploy to Dev Environment') {
