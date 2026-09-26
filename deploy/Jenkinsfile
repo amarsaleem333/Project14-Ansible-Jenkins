@@ -72,7 +72,7 @@ pipeline {
 
         stage('Upload Artifact to Artifactory') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'admin', passwordVariable: 'ARTIFACTORY_PASSWORD', usernameVariable: 'ARTIFACTORY_USER')]) {
+                withCredentials([usernamePassword(credentialsId: '035f2424-600f-444d-b972-7ddcbe7e7dd8', passwordVariable: 'ARTIFACTORY_PASSWORD', usernameVariable: 'ARTIFACTORY_USER')]) {
                     sh '''
                         curl -u ${ARTIFACTORY_USER}:${ARTIFACTORY_PASSWORD} \
                         -T php-todo.zip \
