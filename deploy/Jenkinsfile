@@ -71,18 +71,16 @@ pipeline {
         }
 
         stage('Upload Artifact to Artifactory') {
-           steps {
-               script { 
-                   def server = Artifactory.server 'artifactory-server'                 
-                   def uploadSpec = """{
-                     "files": [
-                         {
-                         "pattern": "php-todo.zip",
-                        "target": "artifactory-server",
-                        "props": "type=zip;status=ready"
-                          }
-                      ]
-                    }""" 
+            steps {
+                withCredentials([usernamePassword(credentialsId: '035f2c24-600f-444d-b972-7ddcbe7e7dd8', passwordVariable: 'ARTIFACTORY_PASSWORD', usernameVariable: 'ARTIFACTORY_USER')]) {
+                    sh '''
+                        curl -u ${ARTIFACTORY_USER}:${ARTIFACTORY_PASSWORD} \
+                        -T php-todo.zip \
+                        "http://localhost:8081/artifactory/php-todo/php-todo.zip"
+                    '''
+                }
+            }
+        }
                   server.upload spec: uploadSpec
                  }
             }
