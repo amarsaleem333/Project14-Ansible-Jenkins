@@ -70,16 +70,12 @@ pipeline {
             }
         }
 
-        stage('Upload Artifact to Artifactory') {
+        stage('Archive Artifact in Jenkins') {
             steps {
-                sh '''
-                    curl -u admin:password \
-                    -T php-todo.zip \
-                    "http://localhost:8081/artifactory/php-todo/php-todo.zip"
-                '''
+                // This saves the zip file directly inside the Jenkins server dashboard for this build
+                archiveArtifacts artifacts: 'php-todo.zip', fingerprint: true
             }
         }
-
         stage('Deploy to Environments') {
             steps {
                 script {
