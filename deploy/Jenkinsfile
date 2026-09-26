@@ -48,6 +48,23 @@ pipeline {
             }
         }
 
+        stage('SonarQube Quality Gate') {
+            when { 
+                branch pattern: "^develop*|^hotfix*|^release*|^main*", comparator: "REGEXP"
+            }
+            environment {
+                scannerHome = tool 'SonarQubeScanner'
+            }
+            steps {
+                withSonarQubeEnv('sonarqube') {
+                    sh "${scannerHome}/bin/sonar-scanner -Dproject.settings=sonar-project.properties"
+                }
+                timeout(time: 1, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
+
         stage('Plot Code Coverage Report') {
             steps {
                 plot csvFileName: 'plot-396c4a6b-b573-41e5-85d8-73613b2ffffb.csv', csvSeries: [[displayTableFlag: false, exclusionValues: 'Lines of Code (LOC),Comment Lines of Code (CLOC),Non-Comment Lines of Code (NCLOC),Logical Lines of Code (LLOC)', file: 'build/logs/phploc.csv', inclusionFlag: 'INCLUDE_BY_STRING', url: '']], group: 'phploc', numBuilds: '100', style: 'line', title: 'A - Lines of code', yaxis: 'Lines of Code'
@@ -72,21 +89,21 @@ pipeline {
 
         stage('Archive Artifact in Jenkins') {
             steps {
-                // This saves the zip file directly inside the Jenkins server dashboard for this build
                 archiveArtifacts artifacts: 'php-todo.zip', fingerprint: true
             }
         }
+        
         stage('Deploy to Environments') {
             steps {
                 script {
-                    def environments = ['dev'] // Add more like 'staging', 'prod' as needed
+                    def environments = ['dev']
                     
                     for (String targetEnv : environments) {
                         echo "Triggering deployment for environment: ${targetEnv}"
                         build job: 'Deploy-To-Server', 
-                              parameters: [[$class: 'StringParameterValue', name: 'env', value: targetEnv]], 
-                              propagate: false, 
-                              wait: true
+                            parameters: [[$class: 'StringParameterValue', name: 'env', value: targetEnv]], 
+                            propagate: false, 
+                            wait: true
                     }
                 }
             }
