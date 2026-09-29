@@ -54,7 +54,7 @@ pipeline {
                     echo "Using PHP binary: $PHP_BIN"
                     $PHP_BIN -v
                     
-                    $PHP_BIN artisan key:generate --force
+                    $PHP_BIN artisan key:generate
                     DB_USERNAME=${DB_USER} DB_PASSWORD=${DB_PASS} $PHP_BIN artisan migrate --force
                     DB_USERNAME=${DB_USER} DB_PASSWORD=${DB_PASS} $PHP_BIN artisan db:seed --force
                 '''
