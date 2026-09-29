@@ -70,12 +70,12 @@ pipeline {
             }
         }
 
-        stage('Code Analysis') {
-            steps {
-                sh 'mkdir -p build/logs'
-                sh '/usr/bin/php /usr/bin/phploc app/ --log-csv build/logs/phploc.csv'
-            }
-        }
+        //stage('Code Analysis') {
+          //  steps {
+            //    sh 'mkdir -p build/logs'
+              //  sh '/usr/bin/php /usr/bin/phploc app/ --log-csv build/logs/phploc.csv'
+            //}
+        //}
 
         stage('SonarQube Quality Gate') {
             when { 
