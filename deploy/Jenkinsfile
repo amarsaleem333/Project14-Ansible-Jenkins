@@ -73,7 +73,7 @@ pipeline {
         stage('Code Analysis') {
             steps {
                 sh 'mkdir -p build/logs'
-                sh 'phploc app/ --log-csv build/logs/phploc.csv'
+                sh '/usr/bin/php /usr/bin/phploc app/ --log-csv build/logs/phploc.csv'
             }
         }
 
