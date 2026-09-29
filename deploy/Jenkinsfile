@@ -35,9 +35,9 @@ pipeline {
                 sh 'COMPOSER_ALLOW_SUPERUSER=1 composer install --ignore-platform-reqs --no-scripts --no-plugins'
                 
                 sh '''
-                    # Dynamically find php7.2 in common absolute paths or PATH
+                    # Explicitly target PHP 7.2. Do NOT fall back to PHP 8.x.
                     PHP_BIN=""
-                    for candidate in /usr/bin/php7.2 /usr/local/bin/php7.2 /opt/php72/bin/php $(which php7.2 2>/dev/null) $(which php 2>/dev/null); do
+                    for candidate in /usr/bin/php7.2 /usr/local/bin/php7.2 /opt/php72/bin/php; do
                         if [ -x "$candidate" ]; then
                             PHP_BIN="$candidate"
                             break
@@ -45,7 +45,10 @@ pipeline {
                     done
                     
                     if [ -z "$PHP_BIN" ]; then
-                        echo "Error: Could not find any executable PHP binary!"
+                        echo "--------------------------------------------------------"
+                        echo "ERROR: PHP 7.2 is required for this app, but was not found!"
+                        echo "Please install php7.2 on this Jenkins agent node."
+                        echo "--------------------------------------------------------"
                         exit 1
                     fi
                     
@@ -62,14 +65,7 @@ pipeline {
         stage('Execute Unit Tests') {
             steps {
                 sh '''
-                    PHP_BIN=""
-                    for candidate in /usr/bin/php7.2 /usr/local/bin/php7.2 /opt/php72/bin/php $(which php7.2 2>/dev/null) $(which php 2>/dev/null); do
-                        if [ -x "$candidate" ]; then
-                            PHP_BIN="$candidate"
-                            break
-                        fi
-                    done
-                    
+                    PHP_BIN="/usr/bin/php7.2"
                     DB_CONNECTION=mysql DB_HOST=127.0.0.1 DB_PORT=3306 DB_DATABASE=homestead DB_USERNAME=''' + env.DB_USER + ''' DB_PASSWORD=''' + env.DB_PASS + ''' $PHP_BIN ./vendor/bin/phpunit
                 '''
             }
