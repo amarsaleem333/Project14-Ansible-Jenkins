@@ -14,7 +14,7 @@ pipeline {
             }
         }
 
-        stage('Prepare Dependencies') {
+       stage('Prepare Dependencies') {
             steps {
                 sh '''
                     echo "APP_NAME=Laravel" > .env
@@ -34,20 +34,46 @@ pipeline {
                 
                 sh 'COMPOSER_ALLOW_SUPERUSER=1 composer install --ignore-platform-reqs --no-scripts --no-plugins'
                 
-                sh """
-                    /usr/bin/php7.2 artisan key:generate --force
-                    DB_USERNAME=${DB_USER} DB_PASSWORD=${DB_PASS} /usr/bin/php7.2 artisan migrate --force
-                    DB_USERNAME=${DB_USER} DB_PASSWORD=${DB_PASS} /usr/bin/php7.2 artisan db:seed --force
-                """
+                sh '''
+                    # Dynamically find php7.2 in common absolute paths or PATH
+                    PHP_BIN=""
+                    for candidate in /usr/bin/php7.2 /usr/local/bin/php7.2 /opt/php72/bin/php $(which php7.2 2>/dev/null) $(which php 2>/dev/null); do
+                        if [ -x "$candidate" ]; then
+                            PHP_BIN="$candidate"
+                            break
+                        fi
+                    done
+                    
+                    if [ -z "$PHP_BIN" ]; then
+                        echo "Error: Could not find any executable PHP binary!"
+                        exit 1
+                    fi
+                    
+                    echo "Using PHP binary: $PHP_BIN"
+                    $PHP_BIN -v
+                    
+                    $PHP_BIN artisan key:generate --force
+                    DB_USERNAME=${DB_USER} DB_PASSWORD=${DB_PASS} $PHP_BIN artisan migrate --force
+                    DB_USERNAME=${DB_USER} DB_PASSWORD=${DB_PASS} $PHP_BIN artisan db:seed --force
+                '''
             }
         }
 
         stage('Execute Unit Tests') {
             steps {
-                sh "DB_CONNECTION=mysql DB_HOST=127.0.0.1 DB_PORT=3306 DB_DATABASE=homestead DB_USERNAME=${DB_USER} DB_PASSWORD=${DB_PASS} /usr/bin/php7.2 ./vendor/bin/phpunit"
+                sh '''
+                    PHP_BIN=""
+                    for candidate in /usr/bin/php7.2 /usr/local/bin/php7.2 /opt/php72/bin/php $(which php7.2 2>/dev/null) $(which php 2>/dev/null); do
+                        if [ -x "$candidate" ]; then
+                            PHP_BIN="$candidate"
+                            break
+                        fi
+                    done
+                    
+                    DB_CONNECTION=mysql DB_HOST=127.0.0.1 DB_PORT=3306 DB_DATABASE=homestead DB_USERNAME=''' + env.DB_USER + ''' DB_PASSWORD=''' + env.DB_PASS + ''' $PHP_BIN ./vendor/bin/phpunit
+                '''
             }
         }
-
         stage('Code Analysis') {
             steps {
                 sh 'mkdir -p build/logs'
