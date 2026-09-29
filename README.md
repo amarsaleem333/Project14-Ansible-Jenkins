@@ -355,6 +355,10 @@ Database Infrastructure: Backed by a MariaDB/MySQL database. The target servers 
 Configuration Management: Ansible is used to enforce state on the servers, with a structured directory (roles, playbooks, inventory) maintained alongside the application code in Visual Studio Code. Server package prerequisites, such as zip and curl, are managed at the OS level.   
 
 
+<img width="530" height="747" alt="image" src="https://github.com/user-attachments/assets/0db44dd1-3fff-4ba1-903c-c429c68a6aed" />
+
+
+
 
 
 
