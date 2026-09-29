@@ -57,8 +57,9 @@ pipeline {
 
         stage('SonarQube Quality Gate') {
             when { 
-                branch pattern: "^(develop|hotfix|release|main).*$", comparator: "REGEXP"
-            }
+            // Using single quotes prevents Groovy from interpreting the $ character
+           branch pattern: '^(develop|hotfix|release|main).*$', comparator: 'REGEXP'
+           }
             environment {
                 scannerHome = tool 'SonarQubeScanner'
             }
