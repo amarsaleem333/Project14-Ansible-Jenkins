@@ -20,9 +20,11 @@ Create the following DNS records pointing to the respective server IP addresses 
 
 [https://artifacts.infradev.steghub.com](https://artifacts.infradev.steghub.com) -> Artifactory
 
-https://todo.<environment>.steghub.com -> TODO WebApp across Dev, SIT, UAT, Pentest, Pre-Prod, and Prod
+https://todo.<environment>.steghub.com 
+-> TODO WebApp across Dev, SIT, UAT, Pentest, Pre-Prod, and Prod
 
-https://tooling.<environment>.steghub.com -> Tooling App across all environments
+https://tooling.<environment>.steghub.com 
+-> Tooling App across all environments
 
 
 Ansible Inventory Setup:
