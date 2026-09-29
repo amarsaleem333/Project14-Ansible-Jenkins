@@ -45,6 +45,7 @@ ansible_python_interpreter=/usr/bin/python
 <DB-Server-Private-IP-Address>
 
 2. Jenkins & GitHub Integration
+
    1-Install Dependencies: Install Jenkins, PHP, and Composer on the CI server.
 
    sudo apt install -y zip libapache2-mod-php phploc php-{xml,bcmath,bz2,intl,gd,mbstring,mysql,zip}
@@ -59,7 +60,7 @@ ansible_python_interpreter=/usr/bin/python
 
       -In Jenkins (Blue Ocean), create a new multibranch pipeline, select GitHub, and input the token to connect the repository.
 
-3. Database Initialization
+4. Database Initialization
   On the target database server, create the necessary database and user for the PHP TODO application:
 
     CREATE DATABASE homestead;
@@ -68,8 +69,8 @@ ansible_python_interpreter=/usr/bin/python
 
      Update the .env.sample file in the application repository with these connectivity details
 
-4. SonarQube & PostgreSQL Configuration (Ubuntu 20.04)
-  Kernel Tuning:
+5. SonarQube & PostgreSQL Configuration (Ubuntu 20.04)
+   Kernel Tuning:
    SonarQube requires kernel parameter adjustments for optimal performance. Update these permanently in /etc/security/limits.conf:
 
    sonarqube   -   nofile   65536
