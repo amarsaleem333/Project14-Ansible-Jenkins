@@ -1,3 +1,4 @@
+
 CI/CD Pipeline Implementation: Jenkins, Ansible, Artifactory, SonarQube, & PHP
 This repository houses the configuration and code for a complete Continuous Integration and Continuous Delivery (CI/CD) pipeline for a PHP-based TODO web application. The pipeline automates code checkout, dependency management, unit testing, static code analysis, artifact packaging, and multi-environment deployment.
 
