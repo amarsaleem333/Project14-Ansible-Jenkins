@@ -33,6 +33,7 @@ pipeline {
                 sh 'DB_USERNAME=homestead DB_PASSWORD=sePret^i /usr/bin/php7.2 artisan migrate --force'
                 sh 'DB_USERNAME=homestead DB_PASSWORD=sePret^i /usr/bin/php7.2 artisan db:seed --force'
                 sh 'DB_USERNAME=homestead DB_PASSWORD=sePret^i /usr/bin/php7.2 artisan key:generate'
+                sh 'DB_USERNAME=homestead DB_PASSWORD=sePret^i scl enable rh-php72 "php artisan migrate --force"'
             }
         }
 
