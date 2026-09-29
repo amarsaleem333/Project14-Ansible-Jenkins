@@ -34,23 +34,17 @@ pipeline {
                 
                 sh 'COMPOSER_ALLOW_SUPERUSER=1 composer install --ignore-platform-reqs --no-scripts --no-plugins'
                 
-                sh '''
-                    PHP_BIN=$(which php7.2 || which php8.0 || which php8.1 || which php)
-                    echo "Using PHP binary: ${PHP_BIN}"
-                    
-                    DB_USERNAME=''' + env.DB_USER + ''' DB_PASSWORD=''' + env.DB_PASS + ''' ${PHP_BIN} artisan key:generate --force
-                    DB_USERNAME=''' + env.DB_USER + ''' DB_PASSWORD=''' + env.DB_PASS + ''' ${PHP_BIN} artisan migrate --force
-                    DB_USERNAME=''' + env.DB_USER + ''' DB_PASSWORD=''' + env.DB_PASS + ''' ${PHP_BIN} artisan db:seed --force
-                '''
+                sh """
+                    /usr/bin/php7.2 artisan key:generate --force
+                    DB_USERNAME=${DB_USER} DB_PASSWORD=${DB_PASS} /usr/bin/php7.2 artisan migrate --force
+                    DB_USERNAME=${DB_USER} DB_PASSWORD=${DB_PASS} /usr/bin/php7.2 artisan db:seed --force
+                """
             }
         }
 
         stage('Execute Unit Tests') {
             steps {
-                sh '''
-                    PHP_BIN=$(which php7.2 || which php8.0 || which php8.1 || which php)
-                    DB_CONNECTION=mysql DB_HOST=127.0.0.1 DB_PORT=3306 DB_DATABASE=homestead DB_USERNAME=''' + env.DB_USER + ''' DB_PASSWORD=''' + env.DB_PASS + ''' ${PHP_BIN} ./vendor/bin/phpunit
-                '''
+                sh "DB_CONNECTION=mysql DB_HOST=127.0.0.1 DB_PORT=3306 DB_DATABASE=homestead DB_USERNAME=${DB_USER} DB_PASSWORD=${DB_PASS} /usr/bin/php7.2 ./vendor/bin/phpunit"
             }
         }
 
