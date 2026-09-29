@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        PHP_BIN = '/usr/bin/php7.2'
+        PHP_BIN = '/usr/bin/php'
         DB_USER = 'homestead'
         DB_PASS = 'sePret^i'
     }
@@ -14,7 +14,7 @@ pipeline {
             }
         }
 
-       stage('Prepare Dependencies') {
+        stage('Prepare Dependencies') {
             steps {
                 sh '''
                     echo "APP_NAME=Laravel" > .env
@@ -35,9 +35,9 @@ pipeline {
                 sh 'COMPOSER_ALLOW_SUPERUSER=1 composer install --ignore-platform-reqs --no-scripts --no-plugins'
                 
                 sh '''
-                    # Explicitly target PHP 7.2. Do NOT fall back to PHP 8.x.
+                    # Target the active system PHP binary (PHP 7.2.34)
                     PHP_BIN=""
-                    for candidate in /usr/bin/php7.2 /usr/local/bin/php7.2 /opt/php72/bin/php; do
+                    for candidate in /usr/bin/php /usr/bin/php7.2 /usr/local/bin/php7.2 $(which php 2>/dev/null); do
                         if [ -x "$candidate" ]; then
                             PHP_BIN="$candidate"
                             break
@@ -46,8 +46,7 @@ pipeline {
                     
                     if [ -z "$PHP_BIN" ]; then
                         echo "--------------------------------------------------------"
-                        echo "ERROR: PHP 7.2 is required for this app, but was not found!"
-                        echo "Please install php7.2 on this Jenkins agent node."
+                        echo "ERROR: Compatible PHP binary was not found!"
                         echo "--------------------------------------------------------"
                         exit 1
                     fi
@@ -65,11 +64,12 @@ pipeline {
         stage('Execute Unit Tests') {
             steps {
                 sh '''
-                    PHP_BIN="/usr/bin/php7.2"
+                    PHP_BIN="/usr/bin/php"
                     DB_CONNECTION=mysql DB_HOST=127.0.0.1 DB_PORT=3306 DB_DATABASE=homestead DB_USERNAME=''' + env.DB_USER + ''' DB_PASSWORD=''' + env.DB_PASS + ''' $PHP_BIN ./vendor/bin/phpunit
                 '''
             }
         }
+
         stage('Code Analysis') {
             steps {
                 sh 'mkdir -p build/logs'
@@ -79,9 +79,8 @@ pipeline {
 
         stage('SonarQube Quality Gate') {
             when { 
-            // Using single quotes prevents Groovy from interpreting the $ character
-           branch pattern: '^(develop|hotfix|release|main).*$', comparator: 'REGEXP'
-           }
+                branch pattern: '^(develop|hotfix|release|main).*$', comparator: 'REGEXP'
+            }
             environment {
                 scannerHome = tool 'SonarQubeScanner'
             }
