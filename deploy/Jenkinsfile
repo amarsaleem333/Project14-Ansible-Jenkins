@@ -34,11 +34,14 @@ pipeline {
                 
                 sh 'COMPOSER_ALLOW_SUPERUSER=1 composer install --ignore-platform-reqs --no-scripts --no-plugins'
                 
-                sh """
-                    ${PHP_BIN} artisan key:generate --force
-                    DB_USERNAME=${DB_USER} DB_PASSWORD=${DB_PASS} ${PHP_BIN} artisan migrate --force
-                    DB_USERNAME=${DB_USER} DB_PASSWORD=${DB_PASS} ${PHP_BIN} artisan db:seed --force
-                """
+                sh '''
+                    PHP_BIN=$(which php7.2 || which php8.0 || which php8.1 || which php)
+                    echo "Using PHP binary: ${PHP_BIN}"
+                    
+                    DB_USERNAME=''' + env.DB_USER + ''' DB_PASSWORD=''' + env.DB_PASS + ''' ${PHP_BIN} artisan key:generate --force
+                    DB_USERNAME=''' + env.DB_USER + ''' DB_PASSWORD=''' + env.DB_PASS + ''' ${PHP_BIN} artisan migrate --force
+                    DB_USERNAME=''' + env.DB_USER + ''' DB_PASSWORD=''' + env.DB_PASS + ''' ${PHP_BIN} artisan db:seed --force
+                '''
             }
         }
 
