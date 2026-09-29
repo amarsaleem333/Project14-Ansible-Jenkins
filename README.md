@@ -14,16 +14,18 @@ Provision standard Linux EC2 virtual instances for the required environments.
 DNS Configuration:
 Create the following DNS records pointing to the respective server IP addresses (assuming a base domain of steghub.com):
 
-[https://ci.infradev.steghub.com](https://ci.infradev.steghub.com) -> Jenkins
+https://ci.infradev.steghub.com   >>Jenkins
 
-[https://sonar.infradev.steghub.com](https://sonar.infradev.steghub.com) -> SonarQube
+https://sonar.infradev.steghub.com >> SonarQube
 
-[https://artifacts.infradev.steghub.com](https://artifacts.infradev.steghub.com) -> Artifactory
+https://artifacts.infradev.steghub.com >> Artifactory
 
 https://todo.<environment>.steghub.com 
+
 -> TODO WebApp across Dev, SIT, UAT, Pentest, Pre-Prod, and Prod
 
 https://tooling.<environment>.steghub.com 
+
 -> Tooling App across all environments
 
 
